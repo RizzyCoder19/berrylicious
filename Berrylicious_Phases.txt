@@ -1,0 +1,849 @@
+# BERRYLICIOUS — BEGIN PRODUCTION BUILD
+
+You are now responsible for implementing the Berrylicious website described in the project documentation.
+
+This is not a request for another plan, another PRD, a mockup, or a generic landing page.
+
+I want you to ACTUALLY BUILD THE WEBSITE.
+
+## SOURCE OF TRUTH
+
+You have three project documents:
+
+1. Berrylicious_PRD_V2.md
+   → Defines WHAT the product is and what it must contain.
+
+2. Berrylicious_TECH_STACK.md
+   → Defines HOW the application should be engineered.
+
+3. Berrylicious_DESIGN_SYSTEM.md
+   → Defines the visual language, design system, UI behavior and visual direction.
+
+You also have the Berrylicious visual reference image.
+
+Treat all four as one unified specification.
+
+PRD = WHAT
+TECH STACK = HOW
+DESIGN SYSTEM + REFERENCE IMAGE = LOOK / FEEL
+
+Do not replace these specifications with your own generic interpretation.
+
+---
+
+# CRITICAL REFERENCE IMAGE INSTRUCTION
+
+Before implementing the final visual design:
+
+1. Inspect the supplied Berrylicious reference image carefully.
+2. Study its:
+   - color relationships
+   - typography character
+   - illustration style
+   - dessert presentation
+   - card styling
+   - decorative doodles
+   - spacing
+   - visual personality
+   - overall warmth
+3. Use it as the primary visual reference.
+
+DO NOT copy the image literally.
+
+DO NOT reproduce it pixel-for-pixel.
+
+Translate its visual language into an original modern responsive website.
+
+If there is a conflict between generic UI conventions and the Berrylicious reference/design system, preserve the Berrylicious design direction unless doing so would hurt usability, accessibility or performance.
+
+IMPORTANT:
+
+The old "Dolce and Chaos" identity is NOT the final brand.
+
+The final brand is:
+
+BERRYLICIOUS
+
+Do not display "Dolce and Chaos" or "Frostbound" anywhere in the final website.
+
+---
+
+# FIRST: INSPECT BEFORE MODIFYING
+
+Before writing significant code:
+
+1. Inspect the entire existing repository.
+2. Identify:
+   - framework
+   - existing components
+   - package manager
+   - existing dependencies
+   - routing structure
+   - styling setup
+   - existing assets
+   - configuration
+   - current git state if relevant
+3. Determine whether a working Next.js foundation already exists.
+4. Preserve useful existing infrastructure.
+5. Do NOT blindly overwrite working files.
+6. Do NOT reinstall technologies that already exist and work.
+7. Do NOT create unnecessary dependencies.
+
+If the repository already contains a partial Berrylicious implementation, improve it rather than destroying it and starting from scratch.
+
+---
+
+# BUILD IN PHASES
+
+Build the project in the following phases.
+
+Do not skip phases.
+
+After each phase, verify that the project still works before moving to the next phase.
+
+---
+
+## PHASE 0 — PROJECT AUDIT
+
+Inspect the repository and establish:
+
+- current framework
+- current package manager
+- existing dependencies
+- existing source structure
+- existing assets
+- existing styling
+- existing implementation
+- build commands
+
+Read all three Berrylicious documents before making architectural decisions.
+
+Do not modify the application substantially during this phase.
+
+Deliverable:
+
+A clear understanding of the current project structure and what must be preserved/rebuilt.
+
+---
+
+# PHASE 1 — FOUNDATION
+
+Implement or clean up the application foundation.
+
+Set up:
+
+- Next.js App Router
+- TypeScript
+- Tailwind CSS
+- design tokens
+- typography
+- global styles
+- responsive base
+- metadata
+- reusable layout primitives
+
+Establish the Berrylicious design tokens from the Design System.
+
+Core colors:
+
+Berry Pink:
+#E98FA8
+
+Deep Berry:
+#9E4663
+
+Strawberry Cream:
+#FFF1E8
+
+Vanilla:
+#FFF9F0
+
+Mint:
+#BFE9DE
+
+Soft Blue:
+#B8DDF2
+
+Dark Cocoa:
+#382D32
+
+Do not scatter raw colors throughout the application.
+
+Use centralized tokens.
+
+Establish typography:
+
+- playful handwritten/script display type
+- readable rounded sans-serif body/UI type
+
+Do not use the script font for dense content or financial information.
+
+---
+
+# PHASE 2 — DATA ARCHITECTURE
+
+Create the data layer before building the interactive product experience.
+
+Recommended:
+
+data/
+  menu.ts
+  flavours.ts
+  business.ts
+  brand.ts
+
+Create strongly typed models.
+
+The Menu, Craving Selector and Dessert Builder must use the same underlying data.
+
+DO NOT duplicate product information manually across components.
+
+DO NOT invent missing information.
+
+Known missing information includes:
+
+- waffle prices
+- bakery prices
+- confirmation of duplicate Kunafa Cake entry
+- final real product photography/assets
+
+If information is missing:
+
+- use a disabled state
+- use "Prices being finalized"
+- or use an explicit placeholder
+
+NEVER invent prices.
+
+---
+
+# PHASE 3 — CORE LAYOUT + NAVIGATION
+
+Build:
+
+- desktop navigation
+- mobile navigation
+- sticky header
+- section anchors
+- responsive container system
+- footer
+
+Navigation should provide fast access to:
+
+Home
+Menu
+Our Story
+Build Yours
+The Business
+
+The following sections must be particularly easy to reach:
+
+- Menu
+- Build Yours
+- Business
+- Investment Ask
+
+Mobile navigation must be accessible.
+
+Implement:
+
+- keyboard navigation
+- Escape to close
+- focus management
+- visible focus states
+
+---
+
+# PHASE 4 — HERO + BRAND EXPERIENCE
+
+Build the Hero according to the PRD and Design System.
+
+Use:
+
+DESSERTS • COFFEE • GOOD VIBES
+
+A little sweet.
+A little chaotic.
+Completely Berrylicious.
+
+Desserts that turn ordinary moments into something sweeter.
+
+Primary CTAs:
+
+Explore the Menu
+Build Your Dessert
+
+Use the Berrylicious visual reference for the illustration composition and visual mood.
+
+Create a custom dessert/berry composition.
+
+Do not use random stock photography.
+
+Do not create a generic SaaS-style hero.
+
+Do not create an excessive 3D scene.
+
+The hero should immediately communicate:
+
+BERRYLICIOUS = playful premium-accessible dessert brand.
+
+---
+
+# PHASE 5 — BRAND INTRO + CRAVING SELECTOR
+
+Build:
+
+Brand Introduction
+
+and
+
+Craving Selector
+
+Craving categories:
+
+- Fruity
+- Creamy
+- Indulgent
+- Fluffy
+
+The selector must actually filter/recommend products from the shared data layer.
+
+Do not create fake product mappings that contradict the menu.
+
+Make the interaction delightful but fast.
+
+---
+
+# PHASE 6 — MENU
+
+Build the complete confirmed menu.
+
+Use reusable product cards.
+
+Categories include:
+
+- Real Fruit Dessert
+- London Strawberry
+- Gelato
+- Mini Pancakes
+- Waffles
+- Churros
+- Acai Bowl
+- Bakery
+
+Use only confirmed prices.
+
+For missing prices:
+
+DO NOT GUESS.
+
+The menu should visually reference the supplied Berrylicious style without becoming a direct copy of the old menu artwork.
+
+Desktop:
+
+Rich multi-column presentation where appropriate.
+
+Mobile:
+
+Readable vertical/card-based layout.
+
+---
+
+# PHASE 7 — DESSERT BUILDER
+
+This is one of the most important parts of the entire website.
+
+Make it feel like a genuine signature product experience.
+
+Build:
+
+01 Base
+02 Flavour
+03 Topping
+04 Your Creation
+
+Available bases:
+
+- Gelato
+- Real Fruit Dessert
+- Mini Pancakes
+- Waffle
+
+The available options must be dynamically derived from valid data.
+
+The final creation should visually update as selections change.
+
+Show:
+
+YOUR CREATION
+
+[Flavour]
++
+[Base]
++
+[Topping]
+
+₹[price]
+
+Only calculate prices that are explicitly defined.
+
+Example:
+
+Gelato:
+₹190 + ₹50 topping = ₹240
+
+If a waffle price is unavailable:
+
+DO NOT calculate one.
+
+Do not create fake checkout functionality.
+
+Include:
+
+Reset / Start Again
+
+The builder must be easy to operate live during the Shark Tank presentation.
+
+This interaction deserves special visual attention.
+
+---
+
+# PHASE 8 — STORY + POSITIONING
+
+Build:
+
+- The Gap
+- Natural Ingredient Story
+- Supply Chain
+- Brand Story
+- Founder
+
+The page should transition naturally rather than feeling like unrelated blocks.
+
+Use illustrations and visual storytelling.
+
+Do not introduce unsupported health or organic claims.
+
+Do not write:
+
+100% organic
+chemical-free
+healthy
+guilt-free
+zero sugar
+certified
+
+unless those claims are explicitly supplied later.
+
+---
+
+# PHASE 9 — BUSINESS PRESENTATION
+
+Build the Business Dashboard.
+
+Use:
+
+₹3L
+Initial capital
+
+₹4L
+Stated average monthly income
+
+₹48L
+Stated annual revenue
+
+60%
+Stated gross margin
+
+1
+Pilot outlet
+
+These are supplied pitch figures.
+
+Do not represent them as independently verified or audited.
+
+Use subtle number animation.
+
+The visual language should become slightly more mature here.
+
+Transition from:
+
+playful dessert brand
+
+to:
+
+credible business presentation.
+
+---
+
+# PHASE 10 — INVESTMENT ASK
+
+Build a visually strong Deep Berry section.
+
+Primary:
+
+₹20 LAKH
+
+Secondary:
+
+for 10% equity
+
+Derived:
+
+₹2 CRORE
+
+Label:
+
+Implied valuation
+
+Calculate the valuation from the underlying data where practical:
+
+₹20,00,000 / 0.10 = ₹2,00,00,000
+
+Do not imply guaranteed returns.
+
+Do not make investment predictions.
+
+Keep the presentation clean and professional.
+
+---
+
+# PHASE 11 — USE OF FUNDS + INVESTOR VALUE
+
+Build:
+
+New Outlet
+Supply Chain
+Student-Focused Marketing
+
+Then:
+
+What an investor gets
+
+Keep the language grounded in the supplied pitch.
+
+No fabricated growth projections.
+
+No fabricated market share.
+
+No guaranteed returns.
+
+---
+
+# PHASE 12 — DELIVERY + CUSTOMER HELP
+
+Build:
+
+Craving doesn't keep office hours.
+
+Include the supplied 24/7 concept carefully.
+
+Channels:
+
+- Website
+- Delivery Apps
+- Direct Orders
+
+Build the floating:
+
+Need Berry Help?
+
+widget.
+
+Interactions can be local/demo-only.
+
+No backend is required.
+
+No fake order confirmation.
+
+No real payment system.
+
+---
+
+# PHASE 13 — FINAL CTA + FOOTER
+
+Build:
+
+Life gives you lemons.
+We'll turn them into something sweeter.
+
+Buttons:
+
+Explore Berrylicious
+Build My Dessert
+
+Finish with the Berrylicious footer.
+
+---
+
+# PHASE 14 — MOTION DESIGN
+
+Only after the static experience is correct:
+
+Add Motion/GSAP where useful.
+
+Use animation for:
+
+- section entrances
+- product transitions
+- builder transitions
+- number counters
+- ingredient journey
+- supply-chain storytelling
+- subtle decorative movement
+
+Animation personality:
+
+SOFT
+ORGANIC
+PLAYFUL
+DELICIOUS
+
+Avoid:
+
+- excessive bouncing
+- giant parallax
+- particle systems
+- cursor-following everywhere
+- unnecessary 3D
+- constant movement
+- animations that delay interaction
+
+Respect:
+
+prefers-reduced-motion
+
+The website must remain fully usable without animation.
+
+---
+
+# PHASE 15 — RESPONSIVE DESIGN
+
+Test intentionally at:
+
+375px
+768px
+1024px
+1440px
+
+Do not merely shrink desktop.
+
+Check:
+
+- hero
+- navigation
+- menu
+- builder
+- business dashboard
+- investment section
+- footer
+
+Fix:
+
+- horizontal overflow
+- clipping
+- overlapping illustrations
+- unreadable text
+- broken cards
+- excessive decoration
+- unusable controls
+
+---
+
+# PHASE 16 — ACCESSIBILITY
+
+Verify:
+
+- semantic HTML
+- heading hierarchy
+- keyboard navigation
+- visible focus states
+- accessible buttons
+- accessible tabs
+- accessible mobile drawer
+- Escape handling
+- focus management
+- descriptive alt text
+- sufficient contrast
+- reduced motion
+
+No important interaction may depend on hover.
+
+---
+
+# PHASE 17 — PERFORMANCE
+
+Optimize:
+
+- images
+- fonts
+- client JavaScript
+- unnecessary dependencies
+- animation workload
+- layout shifts
+- unnecessary re-renders
+
+Use Server Components by default.
+
+Use Client Components only where interaction requires them.
+
+Do not introduce:
+
+- databases
+- APIs
+- authentication
+- payment systems
+- external widgets
+
+for this version.
+
+The website should remain reliable during a live presentation.
+
+---
+
+# PHASE 18 — VISUAL QA
+
+This phase is extremely important.
+
+Do not stop when the application technically works.
+
+Compare the finished website against:
+
+1. PRD
+2. TECH_STACK
+3. DESIGN_SYSTEM
+4. Berrylicious reference image
+
+Look specifically for:
+
+- generic AI-template appearance
+- excessive pink
+- inconsistent illustrations
+- weak typography
+- poor spacing
+- excessive rounded cards
+- over-animation
+- weak visual hierarchy
+- inconsistent product visuals
+- financial section looking too childish
+- mobile layout problems
+
+If any section looks generic, redesign that section.
+
+The reference image should remain visible during visual QA.
+
+---
+
+# PHASE 19 — ENGINEERING QA
+
+Run:
+
+- lint
+- TypeScript typecheck
+- production build
+
+Fix all errors.
+
+Check browser console.
+
+There should be no obvious:
+
+- runtime errors
+- hydration errors
+- broken imports
+- missing assets
+- invalid links
+- accessibility errors
+- layout overflow
+
+Do not declare completion with known errors.
+
+---
+
+# PHASE 20 — PRESENTATION QA
+
+Pretend Tanvi is standing in front of the Shark Tank judges.
+
+Perform this exact journey:
+
+1. Open website.
+2. Introduce Berrylicious from Hero.
+3. Open Craving Selector.
+4. Demonstrate one craving.
+5. Open Dessert Builder.
+6. Build one dessert.
+7. Show its calculated price.
+8. Explore Menu.
+9. Explain the market gap.
+10. Show ingredient/supply-chain story.
+11. Show Business Dashboard.
+12. Show ₹20 LAKH for 10% equity.
+13. Show Use of Funds.
+14. Finish at the final CTA.
+
+This flow must be fast and reliable.
+
+No unnecessary loading.
+
+No awkward scroll positioning.
+
+No confusing interactions.
+
+---
+
+# FINAL RULES
+
+DO NOT:
+
+- invent data
+- invent prices
+- invent testimonials
+- invent awards
+- invent certifications
+- invent market statistics
+- invent customer counts
+- invent social followers
+- invent health claims
+- invent organic certifications
+- add fake ecommerce functionality
+- add unnecessary dependencies
+- turn the site into a generic restaurant template
+- make the entire site pink
+- overuse animations
+- over-engineer the project
+
+DO:
+
+- use the supplied documents
+- inspect the reference image
+- preserve existing useful project infrastructure
+- build reusable components
+- use a single source of truth for product/business data
+- prioritize presentation reliability
+- make the website feel like a real startup
+- make the Dessert Builder genuinely impressive
+- make the business section credible and readable
+- keep the visual system consistent
+- test everything before completion
+
+---
+
+# MOST IMPORTANT FINAL INSTRUCTION
+
+DO NOT JUST BUILD WHAT YOU THINK A DESSERT WEBSITE SHOULD LOOK LIKE.
+
+BUILD **BERRYLICIOUS**.
+
+The personality, visual language and interaction design should be recognizable throughout the entire experience.
+
+The goal is not:
+
+"Look how many technologies we used."
+
+The goal is:
+
+"That is a dessert brand I remember."
+
+Begin with PHASE 0.
+
+After inspecting the repository and all project references, proceed through the phases in order and implement the production website.

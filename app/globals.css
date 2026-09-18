@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+@theme {
+  --color-berry-pink: #E98FA8;
+  --color-deep-berry: #9E4663;
+  --color-strawberry-cream: #FFF1E8;
+  --color-vanilla: #FFF9F0;
+  --color-mint: #BFE9DE;
+  --color-soft-blue: #B8DDF2;
+  --color-dark-cocoa: #382D32;
+
+  --font-display: var(--font-caveat), cursive;
+  --font-sans: var(--font-jakarta), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+:root {
+  --berry-pink: #E98FA8;
+  --deep-berry: #9E4663;
+  --strawberry-cream: #FFF1E8;
+  --vanilla: #FFF9F0;
+  --mint: #BFE9DE;
+  --soft-blue: #B8DDF2;
+  --dark-cocoa: #382D32;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--vanilla);
+  color: var(--dark-cocoa);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #FFF1E8;
+}
+::-webkit-scrollbar-thumb {
+  background: #E98FA8;
+  border-radius: 9999px;
+  border: 2px solid #FFF1E8;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9E4663;
+}
+
+/* Offset for fixed sticky navbar */
+section[id] {
+  scroll-margin-top: 5.5rem;
+}
+
+/* Selection */
+::selection {
+  background-color: #E98FA8;
+  color: #382D32;
+}
+
+/* Subtle hand-drawn border aesthetic */
+.doodle-border {
+  border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+}
+
+/* Soft stationery shadow */
+.card-shadow {
+  box-shadow: 0 8px 30px -4px rgba(158, 70, 99, 0.08), 0 2px 10px -2px rgba(56, 45, 50, 0.04);
+}
+.card-shadow-hover:hover {
+  box-shadow: 0 16px 36px -4px rgba(158, 70, 99, 0.14), 0 4px 16px -2px rgba(56, 45, 50, 0.06);
+}
