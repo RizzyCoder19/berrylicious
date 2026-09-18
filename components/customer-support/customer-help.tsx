@@ -13,11 +13,19 @@ export function CustomerHelp() {
     setSelectedTopic(topic);
     if (topic === "menu") {
       const el = document.getElementById("menu");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      } else {
+        window.location.href = "/menu";
+      }
     }
     if (topic === "ingredients") {
       const el = document.getElementById("craving");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      } else {
+        window.location.href = "/discover";
+      }
     }
   };
 

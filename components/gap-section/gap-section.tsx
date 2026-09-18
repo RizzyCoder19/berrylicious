@@ -1,36 +1,49 @@
+"use client";
+
 import React from "react";
 import { BRAND } from "@/data/brand";
-import { Check, Sparkles, AlertCircle } from "lucide-react";
+import { Check, Sparkles } from "lucide-react";
+import { FadeUp, StaggerChildren } from "@/components/ui/scroll-animations";
 
 export function GapSection() {
   return (
-    <section className="py-24 bg-[#FFF9F0] relative overflow-hidden border-t border-[#E98FA8]/20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="font-display text-2xl sm:text-3xl text-[#9E4663] font-bold block mb-2">
-            Market Positioning
-          </span>
-          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-[#382D32] mb-4">
-            {BRAND.theGap.heading}
-          </h2>
-          <p className="text-base sm:text-lg text-[#382D32]/75 font-medium">
-            {BRAND.theGap.subheading}
-          </p>
-        </div>
+    <section className="py-24 bg-white relative overflow-hidden border-t border-[#E98FA8]/20">
+      {/* Editorial Decorative Watermark Typography */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none pointer-events-none opacity-[0.03] font-display text-[18vw] font-black text-[#382D32] whitespace-nowrap z-0">
+        POSITIONING
+      </div>
 
-        {/* 3-Pillar Positioning Spectrum */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <FadeUp>
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="font-display text-2xl sm:text-3xl text-[#9E4663] font-bold block mb-2">
+              Market Positioning
+            </span>
+            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-[#382D32] mb-4 font-display">
+              {BRAND.theGap.heading}
+            </h2>
+            <p className="text-base sm:text-lg text-[#382D32]/75 font-medium max-w-2xl mx-auto">
+              {BRAND.theGap.subheading}
+            </p>
+          </div>
+        </FadeUp>
+
+        {/* 3-Pillar Positioning Spectrum with Stagger */}
+        <StaggerChildren
+          staggerDelay={0.15}
+          className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch"
+        >
           {BRAND.theGap.pillars.map((pillar) => (
             <div
               key={pillar.label}
               className={`rounded-3xl p-8 transition-all duration-300 flex flex-col justify-between ${
                 pillar.active
-                  ? "bg-[#FFF1E8] border-3 border-[#9E4663] shadow-xl relative lg:-translate-y-2"
-                  : "bg-white border border-[#382D32]/10 card-shadow opacity-90"
+                  ? "bg-[#FFF1E8] border-2 border-[#9E4663] shadow-xl relative lg:-translate-y-2 ring-4 ring-[#E98FA8]/20"
+                  : "bg-[#FFF9F0]/60 border border-[#382D32]/10 card-shadow hover:bg-white"
               }`}
             >
               {pillar.active && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#9E4663] text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm flex items-center gap-1.5 whitespace-nowrap">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#9E4663] text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-md flex items-center gap-1.5 whitespace-nowrap">
                   <Sparkles className="w-3.5 h-3.5 text-[#E98FA8]" />
                   <span>The Berrylicious Sweet Spot</span>
                 </div>
@@ -38,7 +51,7 @@ export function GapSection() {
 
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-2xl font-bold text-[#382D32]">{pillar.label}</h3>
+                  <h3 className="text-2xl font-bold text-[#382D32] font-display">{pillar.label}</h3>
                   <span
                     className={`text-xs font-bold uppercase px-3 py-1 rounded-full ${
                       pillar.active
@@ -79,7 +92,7 @@ export function GapSection() {
               </div>
             </div>
           ))}
-        </div>
+        </StaggerChildren>
       </div>
     </section>
   );

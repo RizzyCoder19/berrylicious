@@ -1,5 +1,7 @@
+"use client";
+
 import React from "react";
-import Link from "next/link";
+import { TransitionLink } from "@/components/navigation/transition-provider";
 import { BerryLogo, DoodleHeart } from "@/components/ui/berry-illustrations";
 import { BRAND } from "@/data/brand";
 
@@ -42,24 +44,24 @@ export function Footer() {
             </h4>
             <ul className="space-y-2.5 text-sm font-semibold text-[#382D32]/80">
               <li>
-                <Link href="#hero" className="hover:text-[#9E4663] transition-colors">
+                <TransitionLink href="/" className="hover:text-[#9E4663] transition-colors">
                   Home
-                </Link>
+                </TransitionLink>
               </li>
               <li>
-                <Link href="#craving" className="hover:text-[#9E4663] transition-colors">
-                  Craving Moods
-                </Link>
+                <TransitionLink href="/discover" className="hover:text-[#9E4663] transition-colors">
+                  Discover & Craving Moods
+                </TransitionLink>
               </li>
               <li>
-                <Link href="#menu" className="hover:text-[#9E4663] transition-colors">
+                <TransitionLink href="/menu" className="hover:text-[#9E4663] transition-colors">
                   Menu & Prices
-                </Link>
+                </TransitionLink>
               </li>
               <li>
-                <Link href="#build" className="hover:text-[#9E4663] transition-colors">
+                <TransitionLink href="/builder" className="hover:text-[#9E4663] transition-colors">
                   Dessert Builder
-                </Link>
+                </TransitionLink>
               </li>
             </ul>
           </div>
@@ -71,24 +73,24 @@ export function Footer() {
             </h4>
             <ul className="space-y-2.5 text-sm font-semibold text-[#382D32]/80">
               <li>
-                <Link href="#story" className="hover:text-[#9E4663] transition-colors">
+                <TransitionLink href="/story" className="hover:text-[#9E4663] transition-colors">
                   Brand Story & Origin
-                </Link>
+                </TransitionLink>
               </li>
               <li>
-                <Link href="#business" className="hover:text-[#9E4663] transition-colors">
+                <TransitionLink href="/business" className="hover:text-[#9E4663] transition-colors">
                   Business Dashboard & Unit Metrics
-                </Link>
+                </TransitionLink>
               </li>
               <li>
-                <Link href="#investment" className="hover:text-[#9E4663] transition-colors">
+                <TransitionLink href="/investment" className="hover:text-[#9E4663] transition-colors">
                   ₹20 Lakh for 10% Equity Ask
-                </Link>
+                </TransitionLink>
               </li>
               <li>
-                <Link href="#investment" className="hover:text-[#9E4663] transition-colors">
-                  Use of Funds & Expansion Plan
-                </Link>
+                <TransitionLink href="/delivery" className="hover:text-[#9E4663] transition-colors">
+                  Delivery & Distribution
+                </TransitionLink>
               </li>
             </ul>
           </div>

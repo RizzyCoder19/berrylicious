@@ -115,9 +115,9 @@ export const BRAND = {
     heading: "Craving doesn't keep office hours.",
     subheading: "Available 24/7 across our direct and partner channels.",
     channels: [
-      { name: "Direct Website", perk: "Special presentation discount & custom dessert builder perks", icon: "Globe" },
-      { name: "Delivery Apps", perk: "Express doorstep delivery in safe insulated thermal boxes", icon: "Smartphone" },
-      { name: "Counter Pick-up", perk: "Freshly assembled right in front of your eyes at our kiosk", icon: "Store" },
+      { name: "Website", perk: "Special presentation discount & custom dessert builder perks", icon: "Globe" },
+      { name: "Delivery Apps", perk: "Express doorstep delivery in safe insulated thermal packaging", icon: "Smartphone" },
+      { name: "Direct Orders", perk: "Direct hotline and WhatsApp ordering for fresh counter pick-up or bulk cravings", icon: "Store" },
     ],
   },
   finalCta: {

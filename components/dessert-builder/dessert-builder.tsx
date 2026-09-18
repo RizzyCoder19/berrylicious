@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import confetti from "canvas-confetti";
+import { registerGSAP, prefersReducedMotion, gsap } from "@/lib/gsap-init";
+import { FadeUp } from "@/components/ui/scroll-animations";
 import {
   BUILDER_BASES,
   BUILDER_FLAVOURS,
@@ -37,6 +39,40 @@ export function DessertBuilder() {
   const [selectedToppingId, setSelectedToppingId] = useState<string>("top-ferrero");
   const [step, setStep] = useState<number>(1);
   const [hasCelebrated, setHasCelebrated] = useState<boolean>(false);
+  const previewRef = useRef<HTMLDivElement>(null);
+  const drizzleRef = useRef<HTMLDivElement>(null);
+  const toppingRef = useRef<HTMLDivElement>(null);
+
+  // GSAP Theatrical Pulse & Layer Assembly on Selection Change
+  useEffect(() => {
+    if (prefersReducedMotion() || !previewRef.current) return;
+    registerGSAP();
+
+    const tl = gsap.timeline();
+    tl.fromTo(
+      previewRef.current,
+      { scale: 0.94, filter: "brightness(1.08)" },
+      { scale: 1, filter: "brightness(1)", duration: 0.4, ease: "back.out(1.8)" }
+    );
+
+    if (drizzleRef.current) {
+      tl.fromTo(
+        drizzleRef.current,
+        { y: -30, opacity: 0, scaleY: 0.5 },
+        { y: 0, opacity: 1, scaleY: 1, duration: 0.35, ease: "bounce.out" },
+        "-=0.2"
+      );
+    }
+
+    if (toppingRef.current) {
+      tl.fromTo(
+        toppingRef.current,
+        { y: -25, opacity: 0, scale: 0.6 },
+        { y: 0, opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" },
+        "-=0.15"
+      );
+    }
+  }, [selectedBaseId, selectedFlavourId, selectedToppingId]);
 
   // Derived selections
   const currentBase = useMemo(
@@ -144,20 +180,22 @@ export function DessertBuilder() {
     <section id="build" className="py-24 bg-[#FFF9F0] relative overflow-hidden border-t border-[#E98FA8]/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 mb-3">
-            <BadgePill text="Live Presentation Centerpiece" color="pink" />
-            <span className="text-xs font-semibold text-[#9E4663]">Signature Interaction #2</span>
+        <FadeUp>
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <div className="inline-flex items-center gap-2 mb-3">
+              <BadgePill text="Live Presentation Centerpiece" color="pink" />
+              <span className="text-xs font-semibold text-[#9E4663]">Signature Interaction #2</span>
+            </div>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#9E4663] font-display mb-4">
+              You bring the craving. <br />
+              <span className="text-[#382D32]">We bring the chaos.</span>
+            </h2>
+            <p className="text-base sm:text-lg text-[#382D32]/80 max-w-xl mx-auto font-medium">
+              Customize your dessert step-by-step. Real prices calculate directly from our recipe
+              database without fabricated checkout fees.
+            </p>
           </div>
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#9E4663] font-display mb-4">
-            You bring the craving. <br />
-            <span className="text-[#382D32]">We bring the chaos.</span>
-          </h2>
-          <p className="text-base sm:text-lg text-[#382D32]/80 max-w-xl mx-auto font-medium">
-            Customize your dessert step-by-step. Real prices calculate directly from our recipe
-            database without fabricated checkout fees.
-          </p>
-        </div>
+        </FadeUp>
 
         {/* Step Navigation Bar */}
         <div className="flex items-center justify-center gap-2 sm:gap-6 mb-12 max-w-2xl mx-auto">
@@ -471,7 +509,10 @@ export function DessertBuilder() {
           </div>
 
           {/* Right Column: Creation Card Live Preview (5 cols) */}
-          <div className="lg:col-span-5 bg-gradient-to-b from-[#FFF1E8] to-[#FFF9F0] rounded-3xl p-6 sm:p-8 border-2 border-[#9E4663]/25 card-shadow flex flex-col justify-between relative overflow-hidden">
+          <div
+            ref={previewRef}
+            className="lg:col-span-5 bg-gradient-to-b from-[#FFF1E8] to-[#FFF9F0] rounded-3xl p-6 sm:p-8 border-2 border-[#9E4663]/25 card-shadow flex flex-col justify-between relative overflow-hidden transition-shadow duration-300"
+          >
             <div className="absolute top-4 right-4 opacity-40 pointer-events-none">
               <DoodleSparkle className="w-8 h-8 text-[#9E4663]" />
             </div>
@@ -486,8 +527,8 @@ export function DessertBuilder() {
                 </span>
               </div>
 
-              {/* Dynamic Illustrated Visual */}
-              <div className="w-full aspect-square max-h-56 mx-auto flex items-center justify-center my-4 transition-transform duration-500 hover:scale-105">
+              {/* Dynamic Illustrated Visual with Assembly Layers */}
+              <div className="w-full aspect-square max-h-56 mx-auto flex items-center justify-center my-4 transition-transform duration-500 relative">
                 {selectedBaseId === "gelato" && (
                   <IllustratedGelatoCone className="w-full h-full drop-shadow-md" />
                 )}
@@ -499,6 +540,36 @@ export function DessertBuilder() {
                 )}
                 {selectedBaseId === "waffle" && (
                   <IllustratedWaffle className="w-full h-full drop-shadow-md" />
+                )}
+
+                {/* Layer 2: Animated Flavour Glaze Drizzle Indicator */}
+                {currentFlavour && (
+                  <div
+                    ref={drizzleRef}
+                    className="absolute top-4 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase shadow-sm border border-white/60 pointer-events-none flex items-center gap-1.5"
+                    style={{
+                      backgroundColor: currentFlavour.color || "#E98FA8",
+                      color: "#382D32",
+                    }}
+                  >
+                    <span>✦ Glaze:</span>
+                    <span>{currentFlavour.name.split("(")[0]}</span>
+                  </div>
+                )}
+
+                {/* Layer 3: Animated Topping Crunch Garnish */}
+                {currentTopping && (
+                  <div
+                    ref={toppingRef}
+                    className="absolute bottom-6 right-6 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase shadow-sm border border-white/60 pointer-events-none flex items-center gap-1.5"
+                    style={{
+                      backgroundColor: currentTopping.color || "#FFF1E8",
+                      color: "#382D32",
+                    }}
+                  >
+                    <span>★ Garnish:</span>
+                    <span>{currentTopping.name.split("(")[0]}</span>
+                  </div>
                 )}
               </div>
 

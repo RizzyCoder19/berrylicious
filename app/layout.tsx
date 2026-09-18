@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Caveat, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import { Navbar } from "@/components/navigation/navbar";
+import { TransitionProvider } from "@/components/navigation/transition-provider";
+import { CustomerHelp } from "@/components/customer-support/customer-help";
 
 const caveat = Caveat({
   variable: "--font-caveat",
@@ -58,7 +61,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${caveat.variable} ${jakarta.variable} scroll-smooth`}>
       <body className="min-h-screen bg-[#FFF9F0] text-[#382D32] antialiased selection:bg-[#E98FA8] selection:text-[#382D32]">
-        {children}
+        <TransitionProvider>
+          <Navbar />
+          {children}
+          <CustomerHelp />
+        </TransitionProvider>
       </body>
     </html>
   );
