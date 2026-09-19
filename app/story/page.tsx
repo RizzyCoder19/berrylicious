@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
-import { BrandStory } from "@/components/brand-story/brand-story";
-import { IngredientStory } from "@/components/ingredient-story/ingredient-story";
-import { SupplyChain } from "@/components/supply-chain/supply-chain";
+import { StoryFilm } from "@/components/story/story-film";
 import { ChapterFooter } from "@/components/navigation/chapter-footer";
 import { Footer } from "@/components/footer/footer";
-import { StoryHero } from "@/components/story/story-hero";
 
 export const metadata: Metadata = {
-  title: "Berrylicious Story — From Midnight Craving to Real Fruit Supply Chain",
+  title: "Berrylicious Story — The Midnight Origin Film & Farm Supply Chain",
   description:
-    "The Berrylicious origin story. A midnight gelato reel, a craving, and a 19-year-old's mission to bring farm-sourced premium desserts to every Indian city.",
+    "The Berrylicious origin film. A midnight gelato reel, a craving, and a 19-year-old's mission to bring farm-sourced premium desserts to every Indian city.",
 };
 
 export default function StoryPage() {
@@ -18,11 +15,8 @@ export default function StoryPage() {
       className="min-h-screen relative overflow-x-hidden"
       style={{ background: "#0F0A0D" }}
     >
-      {/* World: Organic Midnight */}
-      <StoryHero />
-      <BrandStory />
-      <IngredientStory />
-      <SupplyChain />
+      {/* World: Organic Midnight — 5-Scene Film Experience */}
+      <StoryFilm />
 
       <div style={{ background: "#1a1017" }}>
         <ChapterFooter

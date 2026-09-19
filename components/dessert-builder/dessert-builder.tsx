@@ -3,14 +3,10 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import confetti from "canvas-confetti";
 import { registerGSAP, prefersReducedMotion, gsap } from "@/lib/gsap-init";
-import { FadeUp } from "@/components/ui/scroll-animations";
 import {
   BUILDER_BASES,
   BUILDER_FLAVOURS,
   BUILDER_TOPPINGS,
-  BuilderBase,
-  BuilderFlavour,
-  BuilderTopping,
 } from "@/data/flavours";
 import { formatCurrency } from "@/lib/utils";
 import {
@@ -27,10 +23,9 @@ import {
   RotateCcw,
   ArrowRight,
   Check,
+  Zap,
+  Flame,
   CheckCircle2,
-  Heart,
-  HelpCircle,
-  Plus,
 } from "lucide-react";
 
 export function DessertBuilder() {
@@ -39,40 +34,12 @@ export function DessertBuilder() {
   const [selectedToppingId, setSelectedToppingId] = useState<string>("top-ferrero");
   const [step, setStep] = useState<number>(1);
   const [hasCelebrated, setHasCelebrated] = useState<boolean>(false);
-  const previewRef = useRef<HTMLDivElement>(null);
-  const drizzleRef = useRef<HTMLDivElement>(null);
-  const toppingRef = useRef<HTMLDivElement>(null);
 
-  // GSAP Theatrical Pulse & Layer Assembly on Selection Change
-  useEffect(() => {
-    if (prefersReducedMotion() || !previewRef.current) return;
-    registerGSAP();
-
-    const tl = gsap.timeline();
-    tl.fromTo(
-      previewRef.current,
-      { scale: 0.94, filter: "brightness(1.08)" },
-      { scale: 1, filter: "brightness(1)", duration: 0.4, ease: "back.out(1.8)" }
-    );
-
-    if (drizzleRef.current) {
-      tl.fromTo(
-        drizzleRef.current,
-        { y: -30, opacity: 0, scaleY: 0.5 },
-        { y: 0, opacity: 1, scaleY: 1, duration: 0.35, ease: "bounce.out" },
-        "-=0.2"
-      );
-    }
-
-    if (toppingRef.current) {
-      tl.fromTo(
-        toppingRef.current,
-        { y: -25, opacity: 0, scale: 0.6 },
-        { y: 0, opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" },
-        "-=0.15"
-      );
-    }
-  }, [selectedBaseId, selectedFlavourId, selectedToppingId]);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const dessertVisualRef = useRef<HTMLDivElement>(null);
+  const glazeDripRef = useRef<HTMLDivElement>(null);
+  const toppingGarnishRef = useRef<HTMLDivElement>(null);
+  const reactionParticleRef = useRef<HTMLDivElement>(null);
 
   // Derived selections
   const currentBase = useMemo(
@@ -80,13 +47,11 @@ export function DessertBuilder() {
     [selectedBaseId]
   );
 
-  // Compatible flavours
   const availableFlavours = useMemo(
     () => BUILDER_FLAVOURS.filter((f) => f.compatibleBases.includes(selectedBaseId)),
     [selectedBaseId]
   );
 
-  // Compatible toppings
   const availableToppings = useMemo(
     () => BUILDER_TOPPINGS.filter((t) => t.compatibleBases.includes(selectedBaseId)),
     [selectedBaseId]
@@ -104,20 +69,7 @@ export function DessertBuilder() {
     );
   }, [availableToppings, selectedToppingId]);
 
-  // When base changes, auto-select first valid flavour and topping
-  const handleSelectBase = (baseId: string) => {
-    setSelectedBaseId(baseId);
-    const flavours = BUILDER_FLAVOURS.filter((f) => f.compatibleBases.includes(baseId));
-    if (flavours.length > 0) {
-      setSelectedFlavourId(flavours[0].id);
-    }
-    const toppings = BUILDER_TOPPINGS.filter((t) => t.compatibleBases.includes(baseId));
-    if (toppings.length > 0) {
-      setSelectedToppingId(toppings[0].id);
-    }
-  };
-
-  // Price Calculation according to PRD Section 13
+  // Price Calculation according to official model
   const calculatedPriceInfo = useMemo(() => {
     if (currentBase.isPricePending) {
       return {
@@ -157,15 +109,90 @@ export function DessertBuilder() {
     };
   }, [currentBase, currentFlavour, currentTopping]);
 
-  const handleCelebrate = () => {
-    setHasCelebrated(true);
+  // Handle Base selection with reaction animation
+  const handleSelectBase = (baseId: string) => {
+    setSelectedBaseId(baseId);
+    const flavours = BUILDER_FLAVOURS.filter((f) => f.compatibleBases.includes(baseId));
+    if (flavours.length > 0) setSelectedFlavourId(flavours[0].id);
+    const toppings = BUILDER_TOPPINGS.filter((t) => t.compatibleBases.includes(baseId));
+    if (toppings.length > 0) setSelectedToppingId(toppings[0].id);
+
+    triggerReaction("base");
+  };
+
+  const handleSelectFlavour = (flavourId: string) => {
+    setSelectedFlavourId(flavourId);
+    triggerReaction("flavour");
+  };
+
+  const handleSelectTopping = (toppingId: string) => {
+    setSelectedToppingId(toppingId);
+    triggerReaction("topping");
+  };
+
+  // Lab Reaction Animation: Ingredient flies & Dessert reacts
+  const triggerReaction = (type: "base" | "flavour" | "topping") => {
+    if (prefersReducedMotion()) return;
+    registerGSAP();
+
+    // Squish & bounce center stage
+    if (dessertVisualRef.current) {
+      gsap.fromTo(
+        dessertVisualRef.current,
+        { scaleY: 0.88, scaleX: 1.12, rotate: type === "flavour" ? -3 : 3 },
+        { scaleY: 1, scaleX: 1, rotate: 0, duration: 0.5, ease: "elastic.out(1.2, 0.4)" }
+      );
+    }
+
+    // Reaction particle burst
+    if (reactionParticleRef.current) {
+      gsap.fromTo(
+        reactionParticleRef.current,
+        { scale: 0.3, opacity: 1, y: 15 },
+        { scale: 1.5, opacity: 0, y: -45, duration: 0.5, ease: "power2.out" }
+      );
+    }
+
+    // Glaze or garnish entrance
+    if (type === "flavour" && glazeDripRef.current) {
+      gsap.fromTo(
+        glazeDripRef.current,
+        { y: -30, opacity: 0, scaleY: 0.4 },
+        { y: 0, opacity: 1, scaleY: 1, duration: 0.45, ease: "bounce.out" }
+      );
+    }
+
+    if (type === "topping" && toppingGarnishRef.current) {
+      gsap.fromTo(
+        toppingGarnishRef.current,
+        { y: -30, scale: 0.5, opacity: 0 },
+        { y: 0, scale: 1, opacity: 1, duration: 0.4, ease: "back.out(2)" }
+      );
+    }
+  };
+
+  const handleFinishCreation = () => {
+    setStep(4);
+    if (prefersReducedMotion()) return;
+    registerGSAP();
+
+    // Camera Zoom Push into center stage
+    if (stageRef.current) {
+      gsap.fromTo(
+        stageRef.current,
+        { scale: 0.95 },
+        { scale: 1.05, duration: 0.6, ease: "power3.out", yoyo: true, repeat: 1 }
+      );
+    }
+
+    // Confetti celebration
     confetti({
-      particleCount: 80,
-      spread: 70,
-      origin: { y: 0.6 },
+      particleCount: 90,
+      spread: 80,
+      origin: { y: 0.55 },
       colors: ["#E98FA8", "#9E4663", "#BFE9DE", "#B8DDF2", "#FFF1E8"],
     });
-    setTimeout(() => setHasCelebrated(false), 3000);
+    setHasCelebrated(true);
   };
 
   const handleReset = () => {
@@ -177,96 +204,99 @@ export function DessertBuilder() {
   };
 
   return (
-    <section id="build" className="py-24 bg-[#FFF9F0] relative overflow-hidden border-t border-[#E98FA8]/30">
+    <section
+      id="build"
+      className="py-20 relative overflow-hidden bg-gradient-to-b from-[#FFF0F5] via-[#FFE8F0] to-[#FFF9F0]"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Header */}
-        <FadeUp>
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 mb-3">
-              <BadgePill text="Live Presentation Centerpiece" color="pink" />
-              <span className="text-xs font-semibold text-[#9E4663]">Signature Interaction #2</span>
-            </div>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#9E4663] font-display mb-4">
-              You bring the craving. <br />
-              <span className="text-[#382D32]">We bring the chaos.</span>
-            </h2>
-            <p className="text-base sm:text-lg text-[#382D32]/80 max-w-xl mx-auto font-medium">
-              Customize your dessert step-by-step. Real prices calculate directly from our recipe
-              database without fabricated checkout fees.
-            </p>
+        {/* Lab Header */}
+        <div className="text-center max-w-3xl mx-auto mb-12">
+          <div className="inline-flex items-center gap-2 mb-3">
+            <BadgePill text="Dessert Laboratory • Configurator Studio" color="pink" />
+            <span className="text-xs font-mono font-bold text-[#9E4663] bg-white/80 px-2.5 py-0.5 rounded-full border border-[#E98FA8]/40">
+              Formula #{selectedBaseId.slice(0, 3)}-{selectedFlavourId.slice(-3)}
+            </span>
           </div>
-        </FadeUp>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#9E4663] font-display mb-3">
+            You bring the craving. <br />
+            <span className="text-[#382D32]">We assemble the lab.</span>
+          </h2>
+          <p className="text-base sm:text-lg text-[#382D32]/80 max-w-xl mx-auto font-medium">
+            Step into the live configurator. Watch each layer physically travel into the centerpiece
+            cup with live recipe calculation.
+          </p>
+        </div>
 
-        {/* Step Navigation Bar */}
-        <div className="flex items-center justify-center gap-2 sm:gap-6 mb-12 max-w-2xl mx-auto">
+        {/* Step Indicator Bar */}
+        <div className="flex items-center justify-center gap-2 sm:gap-4 mb-10 max-w-xl mx-auto">
           {[
             { num: 1, label: "01 Base" },
             { num: 2, label: "02 Flavour" },
             { num: 3, label: "03 Topping" },
-            { num: 4, label: "04 Your Creation" },
+            { num: 4, label: "04 Ready" },
           ].map((s) => (
             <button
               key={s.num}
               onClick={() => setStep(s.num)}
-              className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold transition-all ${
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                 step === s.num
                   ? "bg-[#9E4663] text-white shadow-md scale-105"
-                  : "bg-white text-[#382D32]/70 hover:bg-[#FFF1E8] border border-[#382D32]/10"
+                  : "bg-white/80 text-[#382D32]/70 hover:bg-white border border-[#382D32]/10"
               }`}
             >
               <span
-                className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${
+                className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-mono ${
                   step === s.num ? "bg-white text-[#9E4663]" : "bg-[#FFF1E8] text-[#382D32]"
                 }`}
               >
                 {s.num}
               </span>
-              <span className="hidden sm:inline">{s.label}</span>
+              <span>{s.label}</span>
             </button>
           ))}
 
           <button
             onClick={handleReset}
-            title="Reset Builder"
-            className="p-2 rounded-full text-[#382D32]/60 hover:text-[#9E4663] hover:bg-[#FFF1E8] transition-colors"
+            title="Reset Laboratory"
+            className="p-2 rounded-full text-[#382D32]/60 hover:text-[#9E4663] hover:bg-white/80 transition-colors cursor-pointer"
           >
             <RotateCcw className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Main Interactive Workspace */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-          {/* Controls Column (7 cols) */}
-          <div className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 border border-[#9E4663]/15 card-shadow">
+        {/* CENTER STAGE CONFIGURATOR WORKSPACE */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          {/* Controls Column (Left, 5 cols) */}
+          <div className="lg:col-span-5 bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-7 border border-[#9E4663]/15 shadow-xl">
             {/* STEP 1: PICK BASE */}
             {step === 1 && (
               <div>
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center justify-between mb-4">
                   <div>
-                    <h3 className="text-2xl font-bold text-[#382D32]">Step 1: Pick your base</h3>
-                    <p className="text-xs sm:text-sm text-[#382D32]/70">
-                      Choose the canvas for your dessert masterpiece.
-                    </p>
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#9E4663] block">
+                      Phase 1 • Structure
+                    </span>
+                    <h3 className="text-xl font-bold text-[#382D32]">Select Your Canvas Base</h3>
                   </div>
-                  <span className="text-xs font-bold uppercase text-[#9E4663] bg-[#FFF1E8] px-3 py-1 rounded-full">
-                    {BUILDER_BASES.length} Options
+                  <span className="text-xs font-bold text-[#9E4663] bg-[#FFF1E8] px-2.5 py-0.5 rounded-full">
+                    {BUILDER_BASES.length} Bases
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                <div className="grid grid-cols-2 gap-3 mb-6">
                   {BUILDER_BASES.map((b) => {
                     const isSelected = selectedBaseId === b.id;
                     return (
                       <button
                         key={b.id}
                         onClick={() => handleSelectBase(b.id)}
-                        className={`p-5 rounded-2xl border-2 text-left transition-all duration-200 cursor-pointer flex flex-col justify-between ${
+                        className={`p-4 rounded-2xl border-2 text-left transition-all duration-200 cursor-pointer flex flex-col justify-between ${
                           isSelected
                             ? "border-[#9E4663] bg-[#FFF1E8] shadow-md ring-2 ring-[#E98FA8]/30"
                             : "border-[#382D32]/10 bg-white hover:border-[#E98FA8] hover:bg-[#FFF9F0]"
                         }`}
                       >
-                        <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-start justify-between mb-2">
                           <span className="text-2xl">
                             {b.id === "gelato" && "🍦"}
                             {b.id === "real-fruit" && "🍓"}
@@ -274,20 +304,19 @@ export function DessertBuilder() {
                             {b.id === "waffle" && "🧇"}
                           </span>
                           {isSelected && (
-                            <span className="w-5 h-5 rounded-full bg-[#9E4663] text-white flex items-center justify-center text-xs">
-                              <Check className="w-3 h-3" />
+                            <span className="w-4 h-4 rounded-full bg-[#9E4663] text-white flex items-center justify-center text-[10px]">
+                              <Check className="w-2.5 h-2.5" />
                             </span>
                           )}
                         </div>
                         <div>
-                          <h4 className="font-bold text-lg text-[#382D32]">{b.name}</h4>
-                          <p className="text-xs text-[#382D32]/70 mb-2">{b.tagline}</p>
-                          <span className="text-xs font-extrabold text-[#9E4663]">
+                          <h4 className="font-bold text-sm text-[#382D32]">{b.name}</h4>
+                          <span className="text-[11px] font-extrabold text-[#9E4663]">
                             {b.basePrice
-                              ? `Base from ${formatCurrency(b.basePrice)}`
+                              ? `From ${formatCurrency(b.basePrice)}`
                               : b.isPricePending
-                              ? "Price being finalized"
-                              : "Variant priced"}
+                              ? "Being finalized"
+                              : "Per variant"}
                           </span>
                         </div>
                       </button>
@@ -298,9 +327,9 @@ export function DessertBuilder() {
                 <div className="flex justify-end">
                   <button
                     onClick={() => setStep(2)}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold bg-[#E98FA8] text-[#382D32] hover:bg-[#e37e99] transition-all shadow-md active:scale-95"
+                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full font-bold bg-[#E98FA8] text-[#382D32] hover:bg-[#e37e99] transition-all shadow-md active:scale-95 cursor-pointer text-sm"
                   >
-                    <span>Next: Choose Flavour</span>
+                    <span>Proceed to Flavours</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -310,115 +339,47 @@ export function DessertBuilder() {
             {/* STEP 2: CHOOSE FLAVOUR */}
             {step === 2 && (
               <div>
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center justify-between mb-4">
                   <div>
-                    <h3 className="text-2xl font-bold text-[#382D32]">Step 2: Choose your flavour</h3>
-                    <p className="text-xs sm:text-sm text-[#382D32]/70">
-                      Options available for <span className="font-bold text-[#9E4663]">{currentBase.name}</span>
-                    </p>
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#9E4663] block">
+                      Phase 2 • Flavour Fusion
+                    </span>
+                    <h3 className="text-xl font-bold text-[#382D32]">Choose Your Flavour Glaze</h3>
                   </div>
                   <button
                     onClick={() => setStep(1)}
-                    className="text-xs font-bold text-[#9E4663] hover:underline"
+                    className="text-xs font-bold text-[#9E4663] hover:underline cursor-pointer"
                   >
-                    ← Change Base
+                    ← Base
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6 max-h-72 overflow-y-auto pr-1">
                   {availableFlavours.map((flavour) => {
                     const isSelected = selectedFlavourId === flavour.id;
                     return (
                       <button
                         key={flavour.id}
-                        onClick={() => setSelectedFlavourId(flavour.id)}
-                        className={`p-4 rounded-2xl border-2 text-left transition-all duration-200 cursor-pointer flex items-center justify-between ${
+                        onClick={() => handleSelectFlavour(flavour.id)}
+                        className={`p-3 rounded-2xl border-2 text-left transition-all duration-200 cursor-pointer flex items-center justify-between ${
                           isSelected
                             ? "border-[#9E4663] bg-[#FFF1E8] shadow-md"
-                            : "border-[#382D32]/10 bg-white hover:border-[#E98FA8]"
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <span
-                            className="w-4 h-4 rounded-full shrink-0 border border-[#382D32]/20"
-                            style={{ backgroundColor: flavour.color }}
-                          />
-                          <div>
-                            <p className="font-bold text-sm text-[#382D32]">{flavour.name}</p>
-                            {flavour.exactPrice && (
-                              <p className="text-xs font-semibold text-[#9E4663]">
-                                {formatCurrency(flavour.exactPrice)}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                        {isSelected && (
-                          <span className="w-5 h-5 rounded-full bg-[#9E4663] text-white flex items-center justify-center text-xs">
-                            <Check className="w-3 h-3" />
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <div className="flex justify-between items-center">
-                  <button
-                    onClick={() => setStep(1)}
-                    className="text-sm font-bold text-[#382D32]/70 hover:text-[#382D32]"
-                  >
-                    Back
-                  </button>
-                  <button
-                    onClick={() => setStep(3)}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold bg-[#E98FA8] text-[#382D32] hover:bg-[#e37e99] transition-all shadow-md active:scale-95"
-                  >
-                    <span>Next: Add Topping</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* STEP 3: ADD TOPPING */}
-            {step === 3 && (
-              <div>
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <h3 className="text-2xl font-bold text-[#382D32]">Step 3: Add a topping</h3>
-                    <p className="text-xs sm:text-sm text-[#382D32]/70">
-                      Garnish your creation with crunch, compote or purist simplicity.
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => setStep(2)}
-                    className="text-xs font-bold text-[#9E4663] hover:underline"
-                  >
-                    ← Change Flavour
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8 max-h-80 overflow-y-auto pr-1">
-                  {availableToppings.map((topping) => {
-                    const isSelected = selectedToppingId === topping.id;
-                    return (
-                      <button
-                        key={topping.id}
-                        onClick={() => setSelectedToppingId(topping.id)}
-                        className={`p-3.5 rounded-2xl border-2 text-left transition-all duration-200 cursor-pointer flex items-center justify-between ${
-                          isSelected
-                            ? "border-[#9E4663] bg-[#FFF1E8] shadow-sm"
                             : "border-[#382D32]/10 bg-white hover:border-[#E98FA8]"
                         }`}
                       >
                         <div className="flex items-center gap-2.5">
                           <span
                             className="w-3.5 h-3.5 rounded-full shrink-0 border border-[#382D32]/20"
-                            style={{ backgroundColor: topping.color }}
+                            style={{ backgroundColor: flavour.color }}
                           />
-                          <span className="font-bold text-xs sm:text-sm text-[#382D32]">
-                            {topping.name}
-                          </span>
+                          <div>
+                            <p className="font-bold text-xs text-[#382D32]">{flavour.name}</p>
+                            {flavour.exactPrice && (
+                              <p className="text-[10px] font-semibold text-[#9E4663]">
+                                {formatCurrency(flavour.exactPrice)}
+                              </p>
+                            )}
+                          </div>
                         </div>
                         {isSelected && (
                           <span className="w-4 h-4 rounded-full bg-[#9E4663] text-white flex items-center justify-center text-[10px]">
@@ -432,181 +393,249 @@ export function DessertBuilder() {
 
                 <div className="flex justify-between items-center">
                   <button
-                    onClick={() => setStep(2)}
-                    className="text-sm font-bold text-[#382D32]/70 hover:text-[#382D32]"
+                    onClick={() => setStep(1)}
+                    className="text-xs font-bold text-[#382D32]/70 hover:text-[#382D32] cursor-pointer"
                   >
                     Back
                   </button>
                   <button
-                    onClick={() => setStep(4)}
-                    className="inline-flex items-center gap-2 px-7 py-3 rounded-full font-bold bg-[#9E4663] text-white hover:bg-[#853650] transition-all shadow-md active:scale-95"
+                    onClick={() => setStep(3)}
+                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full font-bold bg-[#E98FA8] text-[#382D32] hover:bg-[#e37e99] transition-all shadow-md active:scale-95 cursor-pointer text-sm"
                   >
-                    <span>Finish Creation</span>
+                    <span>Proceed to Toppings</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* STEP 3: ADD TOPPING */}
+            {step === 3 && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#9E4663] block">
+                      Phase 3 • Crunch & Garnish
+                    </span>
+                    <h3 className="text-xl font-bold text-[#382D32]">Add Crunch Garnish</h3>
+                  </div>
+                  <button
+                    onClick={() => setStep(2)}
+                    className="text-xs font-bold text-[#9E4663] hover:underline cursor-pointer"
+                  >
+                    ← Flavour
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6 max-h-72 overflow-y-auto pr-1">
+                  {availableToppings.map((topping) => {
+                    const isSelected = selectedToppingId === topping.id;
+                    return (
+                      <button
+                        key={topping.id}
+                        onClick={() => handleSelectTopping(topping.id)}
+                        className={`p-3 rounded-2xl border-2 text-left transition-all duration-200 cursor-pointer flex items-center justify-between ${
+                          isSelected
+                            ? "border-[#9E4663] bg-[#FFF1E8] shadow-sm"
+                            : "border-[#382D32]/10 bg-white hover:border-[#E98FA8]"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span
+                            className="w-3 h-3 rounded-full shrink-0 border border-[#382D32]/20"
+                            style={{ backgroundColor: topping.color }}
+                          />
+                          <span className="font-bold text-xs text-[#382D32]">
+                            {topping.name}
+                          </span>
+                        </div>
+                        {isSelected && (
+                          <span className="w-3.5 h-3.5 rounded-full bg-[#9E4663] text-white flex items-center justify-center text-[9px]">
+                            <Check className="w-2 h-2" />
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <button
+                    onClick={() => setStep(2)}
+                    className="text-xs font-bold text-[#382D32]/70 hover:text-[#382D32] cursor-pointer"
+                  >
+                    Back
+                  </button>
+                  <button
+                    onClick={handleFinishCreation}
+                    className="inline-flex items-center gap-2 px-7 py-2.5 rounded-full font-bold bg-[#9E4663] text-white hover:bg-[#853650] transition-all shadow-md active:scale-95 cursor-pointer text-sm"
+                  >
+                    <span>Finalize Assembly</span>
                     <Sparkles className="w-4 h-4" />
                   </button>
                 </div>
               </div>
             )}
 
-            {/* STEP 4: CREATION SUMMARY */}
+            {/* STEP 4: SUMMARY & CELEBRATION */}
             {step === 4 && (
-              <div className="text-center py-4">
-                <span className="text-4xl mb-3 block">🎉</span>
-                <h3 className="text-2xl sm:text-3xl font-bold text-[#9E4663] font-display mb-2">
-                  Your Custom Creation is Ready!
+              <div className="text-center py-2">
+                <span className="text-3xl mb-2 block">✨</span>
+                <h3 className="text-2xl font-bold text-[#9E4663] font-display mb-1">
+                  Laboratory Recipe Ready!
                 </h3>
-                <p className="text-sm text-[#382D32]/70 mb-8">
-                  Presenting this combination live at the Shark Tank kiosk.
+                <p className="text-xs text-[#382D32]/70 mb-5">
+                  Live recipe formula ready for preparation at the kiosk.
                 </p>
 
-                <div className="bg-[#FFF1E8] rounded-2xl p-6 border border-[#E98FA8]/50 max-w-md mx-auto mb-8 text-left">
-                  <div className="flex justify-between items-center pb-3 border-b border-[#E98FA8]/40 mb-3">
-                    <span className="text-xs font-bold uppercase text-[#9E4663]">Base</span>
-                    <span className="font-bold text-sm text-[#382D32]">{currentBase.name}</span>
+                <div className="bg-[#FFF1E8] rounded-2xl p-4 border border-[#E98FA8]/50 mb-5 text-left text-xs">
+                  <div className="flex justify-between items-center pb-2 border-b border-[#E98FA8]/40 mb-2">
+                    <span className="font-mono text-[#9E4663] uppercase">Base</span>
+                    <span className="font-bold text-[#382D32]">{currentBase.name}</span>
                   </div>
-                  <div className="flex justify-between items-center pb-3 border-b border-[#E98FA8]/40 mb-3">
-                    <span className="text-xs font-bold uppercase text-[#9E4663]">Flavour</span>
-                    <span className="font-bold text-sm text-[#382D32]">{currentFlavour?.name}</span>
+                  <div className="flex justify-between items-center pb-2 border-b border-[#E98FA8]/40 mb-2">
+                    <span className="font-mono text-[#9E4663] uppercase">Flavour</span>
+                    <span className="font-bold text-[#382D32]">{currentFlavour?.name}</span>
                   </div>
-                  <div className="flex justify-between items-center pb-3 border-b border-[#E98FA8]/40 mb-3">
-                    <span className="text-xs font-bold uppercase text-[#9E4663]">Topping</span>
-                    <span className="font-bold text-sm text-[#382D32]">{currentTopping?.name}</span>
+                  <div className="flex justify-between items-center pb-2 border-b border-[#E98FA8]/40 mb-2">
+                    <span className="font-mono text-[#9E4663] uppercase">Topping</span>
+                    <span className="font-bold text-[#382D32]">{currentTopping?.name}</span>
                   </div>
-                  <div className="flex justify-between items-baseline pt-2">
-                    <span className="text-xs font-bold uppercase text-[#9E4663]">Total Price</span>
+                  <div className="flex justify-between items-baseline pt-1">
+                    <span className="font-bold uppercase text-[#9E4663]">Total</span>
                     <div className="text-right">
-                      <span className="text-2xl font-extrabold text-[#9E4663]">
+                      <span className="text-xl font-black text-[#9E4663]">
                         {calculatedPriceInfo.display}
                       </span>
-                      {calculatedPriceInfo.breakdown && (
-                        <p className="text-[10px] text-[#382D32]/60 font-semibold">
-                          ({calculatedPriceInfo.breakdown})
-                        </p>
-                      )}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-center gap-4">
+                <div className="flex items-center justify-center gap-3">
                   <button
-                    onClick={handleCelebrate}
-                    className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold bg-[#E98FA8] text-[#382D32] hover:bg-[#e37e99] shadow-lg transition-all active:scale-95 border border-[#9E4663]/30"
+                    onClick={handleFinishCreation}
+                    className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-full font-bold bg-[#E98FA8] text-[#382D32] hover:bg-[#e37e99] shadow-md transition-all active:scale-95 cursor-pointer text-xs"
                   >
-                    <span>Looks Berrylicious!</span>
-                    <Sparkles className="w-4 h-4 text-[#9E4663]" />
+                    <span>Celebrate</span>
+                    <Sparkles className="w-3.5 h-3.5 text-[#9E4663]" />
                   </button>
 
                   <button
                     onClick={() => setStep(1)}
-                    className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-bold bg-white text-[#382D32] border border-[#382D32]/20 hover:bg-[#FFF1E8] transition-all"
+                    className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full font-bold bg-white text-[#382D32] border border-[#382D32]/20 hover:bg-[#FFF1E8] transition-all cursor-pointer text-xs"
                   >
-                    <RotateCcw className="w-4 h-4" />
-                    <span>Build Another</span>
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    <span>Rebuild</span>
                   </button>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Right Column: Creation Card Live Preview (5 cols) */}
+          {/* CENTER STAGE: THE PHYSICAL DESSERT LAB (Right, 7 cols) */}
           <div
-            ref={previewRef}
-            className="lg:col-span-5 bg-gradient-to-b from-[#FFF1E8] to-[#FFF9F0] rounded-3xl p-6 sm:p-8 border-2 border-[#9E4663]/25 card-shadow flex flex-col justify-between relative overflow-hidden transition-shadow duration-300"
+            ref={stageRef}
+            className="lg:col-span-7 relative bg-gradient-to-tr from-[#FFF5F8] via-[#FFF9F0] to-white rounded-3xl p-8 border-2 border-[#9E4663]/20 shadow-2xl flex flex-col items-center justify-between min-h-[460px] overflow-hidden"
           >
-            <div className="absolute top-4 right-4 opacity-40 pointer-events-none">
-              <DoodleSparkle className="w-8 h-8 text-[#9E4663]" />
+            {/* Lab Grid Watermark */}
+            <div
+              className="absolute inset-0 bg-[linear-gradient(to_right,#E98FA815_1px,transparent_1px),linear-gradient(to_bottom,#E98FA815_1px,transparent_1px)] bg-[size:2.5rem_2.5rem] pointer-events-none"
+              aria-hidden="true"
+            />
+
+            {/* Reaction particle */}
+            <div
+              ref={reactionParticleRef}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-radial from-[#FFB6C6]/40 to-transparent pointer-events-none opacity-0 z-0"
+            />
+
+            {/* Stage Header */}
+            <div className="w-full flex items-center justify-between z-10">
+              <span className="text-[11px] font-mono font-black uppercase tracking-widest text-[#9E4663] bg-white px-3 py-1 rounded-full border border-[#9E4663]/20 shadow-xs flex items-center gap-1.5">
+                <Zap className="w-3 h-3 text-[#E98FA8]" />
+                Live Assembly Stage
+              </span>
+              <span className="text-xs font-bold text-[#382D32]/70 bg-white/80 px-3 py-1 rounded-full border border-[#382D32]/10">
+                Stage Scale 1:1
+              </span>
             </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-xs font-extrabold uppercase tracking-widest text-[#9E4663]">
-                  ✦ Live Custom Preview
-                </span>
-                <span className="text-xs font-bold text-[#382D32]/60 bg-white px-2.5 py-0.5 rounded-full border border-[#9E4663]/15">
-                  Recipe #{selectedBaseId.slice(0, 3)}-{selectedFlavourId.slice(-3)}
-                </span>
-              </div>
+            {/* The Central Dessert Visual Container with Animated Layers */}
+            <div
+              ref={dessertVisualRef}
+              className="relative w-64 sm:w-72 md:w-80 aspect-square my-6 flex items-center justify-center transition-transform duration-300 z-10"
+            >
+              {/* Dynamic Base Visual */}
+              {selectedBaseId === "gelato" && (
+                <IllustratedGelatoCone className="w-full h-full drop-shadow-xl" />
+              )}
+              {selectedBaseId === "real-fruit" && (
+                <IllustratedFruitBowl className="w-full h-full drop-shadow-xl" />
+              )}
+              {selectedBaseId === "mini-pancakes" && (
+                <IllustratedPancakes className="w-full h-full drop-shadow-xl" />
+              )}
+              {selectedBaseId === "waffle" && (
+                <IllustratedWaffle className="w-full h-full drop-shadow-xl" />
+              )}
 
-              {/* Dynamic Illustrated Visual with Assembly Layers */}
-              <div className="w-full aspect-square max-h-56 mx-auto flex items-center justify-center my-4 transition-transform duration-500 relative">
-                {selectedBaseId === "gelato" && (
-                  <IllustratedGelatoCone className="w-full h-full drop-shadow-md" />
-                )}
-                {selectedBaseId === "real-fruit" && (
-                  <IllustratedFruitBowl className="w-full h-full drop-shadow-md" />
-                )}
-                {selectedBaseId === "mini-pancakes" && (
-                  <IllustratedPancakes className="w-full h-full drop-shadow-md" />
-                )}
-                {selectedBaseId === "waffle" && (
-                  <IllustratedWaffle className="w-full h-full drop-shadow-md" />
-                )}
-
-                {/* Layer 2: Animated Flavour Glaze Drizzle Indicator */}
-                {currentFlavour && (
-                  <div
-                    ref={drizzleRef}
-                    className="absolute top-4 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase shadow-sm border border-white/60 pointer-events-none flex items-center gap-1.5"
-                    style={{
-                      backgroundColor: currentFlavour.color || "#E98FA8",
-                      color: "#382D32",
-                    }}
-                  >
-                    <span>✦ Glaze:</span>
-                    <span>{currentFlavour.name.split("(")[0]}</span>
-                  </div>
-                )}
-
-                {/* Layer 3: Animated Topping Crunch Garnish */}
-                {currentTopping && (
-                  <div
-                    ref={toppingRef}
-                    className="absolute bottom-6 right-6 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase shadow-sm border border-white/60 pointer-events-none flex items-center gap-1.5"
-                    style={{
-                      backgroundColor: currentTopping.color || "#FFF1E8",
-                      color: "#382D32",
-                    }}
-                  >
-                    <span>★ Garnish:</span>
-                    <span>{currentTopping.name.split("(")[0]}</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Creation Stack Details */}
-              <div className="bg-white/80 backdrop-blur-xs rounded-2xl p-4 border border-[#9E4663]/15 mb-4">
-                <p className="text-[11px] font-bold text-[#9E4663] uppercase tracking-wider mb-1">
-                  Combination Formula
-                </p>
-                <p className="text-base font-extrabold text-[#382D32] leading-tight">
-                  {currentFlavour?.name.split("(")[0] || "Signature"}
-                </p>
-                <div className="flex items-center gap-1.5 text-xs text-[#382D32]/70 font-semibold mt-1">
-                  <span>+ {currentBase.name}</span>
-                  <span>+ {currentTopping?.name.split("(")[0] || "Topping"}</span>
+              {/* Layer 2: Animated Flavour Glaze Drip */}
+              {currentFlavour && (
+                <div
+                  ref={glazeDripRef}
+                  className="absolute top-4 left-1/2 -translate-x-1/2 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow-md border border-white/70 pointer-events-none flex items-center gap-1.5"
+                  style={{
+                    backgroundColor: currentFlavour.color || "#E98FA8",
+                    color: "#382D32",
+                  }}
+                >
+                  <span>✦ Layer:</span>
+                  <span>{currentFlavour.name.split("(")[0]}</span>
                 </div>
-              </div>
+              )}
+
+              {/* Layer 3: Animated Garnish Sprinkle */}
+              {currentTopping && (
+                <div
+                  ref={toppingGarnishRef}
+                  className="absolute bottom-6 right-4 sm:right-6 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow-md border border-white/70 pointer-events-none flex items-center gap-1.5"
+                  style={{
+                    backgroundColor: currentTopping.color || "#FFF1E8",
+                    color: "#382D32",
+                  }}
+                >
+                  <span>★ Garnish:</span>
+                  <span>{currentTopping.name.split("(")[0]}</span>
+                </div>
+              )}
             </div>
 
-            {/* Bottom Total Bar */}
-            <div className="pt-4 border-t border-[#9E4663]/20 flex items-center justify-between">
+            {/* Stage Bottom Total Bar */}
+            <div className="w-full bg-white/90 backdrop-blur-md rounded-2xl p-4 border border-[#9E4663]/20 flex items-center justify-between z-10">
               <div>
-                <span className="text-xs font-bold text-[#382D32]/60 uppercase block">
-                  Calculated Price
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#382D32]/60 block">
+                  Calculated Recipe Cost
                 </span>
-                <span className="text-3xl font-extrabold text-[#9E4663]">
+                <span className="text-3xl font-black text-[#9E4663] font-sans">
                   {calculatedPriceInfo.display}
                 </span>
+                {calculatedPriceInfo.breakdown && (
+                  <p className="text-[10px] text-[#382D32]/60 font-semibold mt-0.5">
+                    ({calculatedPriceInfo.breakdown})
+                  </p>
+                )}
               </div>
 
-              <button
-                type="button"
-                onClick={handleCelebrate}
-                className="px-5 py-2.5 rounded-full bg-[#E98FA8] hover:bg-[#e37e99] text-[#382D32] font-bold text-xs shadow-sm transition-transform active:scale-95 cursor-pointer border border-[#9E4663]/20 flex items-center gap-1.5"
-              >
-                <span>Celebrate</span>
-                <Sparkles className="w-3.5 h-3.5 text-[#9E4663]" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleFinishCreation()}
+                  className="px-6 py-3 rounded-full bg-[#9E4663] text-white font-bold text-xs shadow-md transition-transform active:scale-95 cursor-pointer flex items-center gap-1.5"
+                >
+                  <span>Test Formula</span>
+                  <Sparkles className="w-3.5 h-3.5 text-[#E98FA8]" />
+                </button>
+              </div>
             </div>
           </div>
         </div>

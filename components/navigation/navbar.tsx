@@ -3,18 +3,33 @@
 import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { TransitionLink } from "@/components/navigation/transition-provider";
-import { BerryLogo, BadgePill } from "@/components/ui/berry-illustrations";
-import { Menu, X, Sparkles, ChevronRight, Presentation, Compass, Utensils, Wand2, BookOpen, User, BarChart2, TrendingUp, Truck } from "lucide-react";
+import { BerryLogo } from "@/components/ui/berry-illustrations";
+import {
+  Menu,
+  X,
+  Sparkles,
+  ChevronRight,
+  Presentation,
+  Compass,
+  Utensils,
+  Wand2,
+  BookOpen,
+  User,
+  BarChart2,
+  TrendingUp,
+  Truck,
+} from "lucide-react";
 
 export const NAV_ROUTES = [
-  { name: "Discover", href: "/discover", icon: Compass, world: "Mint" },
-  { name: "Menu", href: "/menu", icon: Utensils, world: "Dark Cocoa" },
-  { name: "Builder", href: "/builder", icon: Wand2, world: "Strawberry" },
-  { name: "Story", href: "/story", icon: BookOpen, world: "Midnight" },
-  { name: "Tanvi", href: "/founder", icon: User, world: "Parchment" },
-  { name: "Business", href: "/business", icon: BarChart2, world: "Pitch" },
-  { name: "Investment", href: "/investment", icon: TrendingUp, world: "Deep Berry" },
-  { name: "Delivery", href: "/delivery", icon: Truck, world: "Soft Blue" },
+  { num: "01", name: "Opening", href: "/", icon: Sparkles, world: "Cream" },
+  { num: "02", name: "Discover", href: "/discover", icon: Compass, world: "Mint" },
+  { num: "03", name: "Menu", href: "/menu", icon: Utensils, world: "Cocoa" },
+  { num: "04", name: "Builder", href: "/builder", icon: Wand2, world: "Lab" },
+  { num: "05", name: "Story", href: "/story", icon: BookOpen, world: "Midnight" },
+  { num: "06", name: "Tanvi", href: "/founder", icon: User, world: "Portrait" },
+  { num: "07", name: "Business", href: "/business", icon: BarChart2, world: "Pitch" },
+  { num: "08", name: "Investment", href: "/investment", icon: TrendingUp, world: "Shark Tank" },
+  { num: "09", name: "Delivery", href: "/delivery", icon: Truck, world: "Delivery" },
 ];
 
 export function Navbar() {
@@ -61,75 +76,89 @@ export function Navbar() {
   // Check if we are on a dark world page (Menu / Story / Investment)
   const isDarkWorld = pathname === "/menu" || pathname === "/story" || pathname === "/investment";
 
+  const currentRouteIndex = NAV_ROUTES.findIndex((r) => r.href === pathname);
+  const progressPercent =
+    currentRouteIndex >= 0 ? Math.round(((currentRouteIndex + 1) / NAV_ROUTES.length) * 100) : 11;
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
           ? isDarkWorld
-            ? "bg-[#181119]/90 backdrop-blur-md shadow-[0_4px_25px_rgba(0,0,0,0.5)] py-2 border-b border-white/10"
-            : "bg-[#FFF9F0]/95 backdrop-blur-md shadow-[0_4px_25px_-2px_rgba(158,70,99,0.1)] py-2 border-b border-[#E98FA8]/20"
+            ? "bg-[#140a10]/90 backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.6)] py-2 border-b border-white/10"
+            : "bg-[#FFF9F0]/95 backdrop-blur-md shadow-[0_4px_25px_-2px_rgba(158,70,99,0.12)] py-2 border-b border-[#E98FA8]/20"
           : isDarkWorld
-          ? "bg-[#181119]/70 backdrop-blur-sm py-3.5 border-b border-white/5"
+          ? "bg-[#140a10]/70 backdrop-blur-sm py-3.5 border-b border-white/5"
           : "bg-[#FFF9F0]/85 backdrop-blur-sm py-3.5 border-b border-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        {/* Logo */}
+        {/* Brand Film Logo */}
         <TransitionLink
           href="/"
-          className="group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#9E4663] rounded-xl p-1 shrink-0"
+          className="group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#9E4663] rounded-xl p-1 shrink-0 flex items-center gap-2.5"
           aria-label="Berrylicious Homepage"
         >
           <BerryLogo />
+          <span className="hidden lg:inline-flex items-center gap-1.5 text-[10px] uppercase font-black tracking-widest px-2 py-0.5 rounded-full border border-[#9E4663]/30 bg-black/5 text-[#9E4663]">
+            Film Mode
+          </span>
         </TransitionLink>
 
-        {/* Desktop Floating Pill Navigation */}
+        {/* Desktop Chapter Navigator */}
         <nav
-          className={`hidden xl:flex items-center gap-1 px-3 py-1.5 rounded-full border transition-colors shadow-xs ${
+          className={`hidden xl:flex items-center gap-1 px-3 py-1.5 rounded-full border transition-colors shadow-sm ${
             isDarkWorld
-              ? "bg-white/10 border-white/15 text-white/90"
-              : "bg-white/80 border-[#E98FA8]/30 text-[#382D32]"
+              ? "bg-black/40 border-white/15 text-white/90"
+              : "bg-white/85 border-[#E98FA8]/35 text-[#382D32]"
           }`}
-          aria-label="Main Navigation"
+          aria-label="Cinematic Chapter Navigation"
         >
           {NAV_ROUTES.map((route) => {
             const isActive = pathname === route.href;
             const Icon = route.icon;
             return (
               <TransitionLink
-                key={route.name}
+                key={route.num}
                 href={route.href}
-                className={`relative px-3.5 py-1.5 rounded-full text-xs font-bold transition-all duration-200 flex items-center gap-1.5 ${
+                className={`relative px-3 py-1.5 rounded-full text-xs font-bold transition-all duration-200 flex items-center gap-1.5 group ${
                   isActive
                     ? "bg-[#E98FA8] text-[#382D32] shadow-sm scale-105"
                     : isDarkWorld
-                    ? "text-white/80 hover:text-[#FFB6C6] hover:bg-white/10"
-                    : "text-[#382D32]/80 hover:text-[#9E4663] hover:bg-[#FFF1E8]"
+                    ? "text-white/75 hover:text-[#FFB6C6] hover:bg-white/10"
+                    : "text-[#382D32]/75 hover:text-[#9E4663] hover:bg-[#FFF1E8]"
                 }`}
               >
+                <span
+                  className={`text-[9px] font-mono tracking-tighter opacity-70 ${
+                    isActive ? "text-[#382D32]" : ""
+                  }`}
+                >
+                  {route.num}
+                </span>
                 <Icon className="w-3.5 h-3.5" />
                 <span>{route.name}</span>
                 {isActive && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#9E4663] animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#9E4663] animate-ping ml-0.5" />
                 )}
               </TransitionLink>
             );
           })}
         </nav>
 
-        {/* Medium Screen Navigation (Simplified) */}
+        {/* Mid-screen Chapter Navigator */}
         <nav
           className={`hidden md:flex xl:hidden items-center gap-1 px-2.5 py-1 rounded-full border ${
-            isDarkWorld ? "bg-white/10 border-white/15 text-white" : "bg-white/80 border-[#E98FA8]/30"
+            isDarkWorld ? "bg-black/40 border-white/15 text-white" : "bg-white/85 border-[#E98FA8]/35"
           }`}
         >
           {NAV_ROUTES.slice(0, 5).map((route) => {
             const isActive = pathname === route.href;
             return (
               <TransitionLink
-                key={route.name}
+                key={route.num}
                 href={route.href}
-                className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all ${
+                className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all flex items-center gap-1 ${
                   isActive
                     ? "bg-[#E98FA8] text-[#382D32]"
                     : isDarkWorld
@@ -137,7 +166,8 @@ export function Navbar() {
                     : "text-[#382D32]/80 hover:text-[#9E4663]"
                 }`}
               >
-                {route.name}
+                <span className="text-[9px] font-mono opacity-60">{route.num}</span>
+                <span>{route.name}</span>
               </TransitionLink>
             );
           })}
@@ -145,12 +175,28 @@ export function Navbar() {
             href="/investment"
             className="px-2.5 py-1 rounded-full text-xs font-bold text-[#9E4663] bg-[#FFF1E8]"
           >
-            Shark Tank
+            08 Climax
           </TransitionLink>
         </nav>
 
-        {/* Desktop Action Buttons */}
+        {/* Action Controls & Story Progress */}
         <div className="hidden lg:flex items-center gap-2.5">
+          {/* Subtle Chapter Progress Indicator */}
+          <div
+            className={`hidden 2xl:flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold border ${
+              isDarkWorld ? "bg-white/10 border-white/15 text-white/80" : "bg-[#FFF1E8] border-[#E98FA8]/30 text-[#9E4663]"
+            }`}
+          >
+            <span className="text-[10px] uppercase font-mono tracking-wider">Chapter Progress</span>
+            <div className="w-12 h-1.5 rounded-full bg-black/15 overflow-hidden">
+              <div
+                className="h-full bg-[#E98FA8] transition-all duration-500 rounded-full"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+            <span className="text-[10px] font-mono">{progressPercent}%</span>
+          </div>
+
           <TransitionLink
             href="/investment"
             className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-extrabold uppercase tracking-wider transition-all shadow-xs active:scale-95 border ${
@@ -169,18 +215,18 @@ export function Navbar() {
             href="/builder"
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-extrabold uppercase tracking-wider bg-[#E98FA8] hover:bg-[#e47e9a] text-[#382D32] transition-all duration-200 shadow-[0_4px_14px_rgba(233,143,168,0.4)] hover:shadow-[0_6px_20px_rgba(233,143,168,0.55)] active:scale-95 border border-[#9E4663]/30"
           >
-            <span>Build Dessert</span>
+            <span>Lab Studio</span>
             <Sparkles className="w-3.5 h-3.5 text-[#9E4663]" />
           </TransitionLink>
         </div>
 
-        {/* Mobile Hamburger & Quick Link */}
+        {/* Mobile Burger & Quick Link */}
         <div className="flex md:hidden items-center gap-2">
           <TransitionLink
             href="/builder"
             className="px-3 py-1.5 rounded-full text-xs font-bold bg-[#E98FA8] text-[#382D32] border border-[#9E4663]/20 shadow-xs"
           >
-            Build
+            Lab
           </TransitionLink>
           <button
             type="button"
@@ -235,38 +281,29 @@ export function Navbar() {
             </div>
 
             <div className="mb-4">
-              <BadgePill text="Multi-Chapter Experience" color="pink" />
+              <div className="flex items-center justify-between text-xs font-bold text-[#9E4663] bg-[#FFF1E8] px-3 py-1.5 rounded-xl">
+                <span>Story Progress</span>
+                <span className="font-mono">{progressPercent}%</span>
+              </div>
             </div>
 
             <nav className="flex flex-col gap-1.5" aria-label="Mobile Route Links">
-              <TransitionLink
-                href="/"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-sm font-bold transition-all ${
-                  pathname === "/"
-                    ? "bg-[#E98FA8] text-[#382D32]"
-                    : "text-[#382D32] hover:bg-[#FFF1E8] hover:text-[#9E4663]"
-                }`}
-              >
-                <span>Home • Opening</span>
-                <ChevronRight className="w-4 h-4 opacity-50" />
-              </TransitionLink>
-
               {NAV_ROUTES.map((route) => {
                 const isActive = pathname === route.href;
                 const Icon = route.icon;
                 return (
                   <TransitionLink
-                    key={route.name}
+                    key={route.num}
                     href={route.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-sm font-bold transition-all ${
+                    className={`flex items-center justify-between px-3.5 py-2 rounded-2xl text-sm font-bold transition-all ${
                       isActive
                         ? "bg-[#E98FA8] text-[#382D32] shadow-xs"
                         : "text-[#382D32] hover:bg-[#FFF1E8] hover:text-[#9E4663]"
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
+                      <span className="text-xs font-mono opacity-60">{route.num}</span>
                       <Icon className="w-4 h-4 text-[#9E4663]" />
                       <span>{route.name}</span>
                     </div>
@@ -297,10 +334,6 @@ export function Navbar() {
               <Presentation className="w-4 h-4" />
               <span>₹20L Shark Tank Climax</span>
             </TransitionLink>
-
-            <p className="text-center text-[11px] text-[#382D32]/60 font-medium">
-              Desserts • Coffee • Good Vibes
-            </p>
           </div>
         </div>
       </div>
