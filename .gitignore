@@ -43,4 +43,6 @@ next-env.d.ts
 # docs and agent worktrees (prevent bundler scanning dehydrated files)
 Docs/
 .kilo/
+.claude/
+/film/
 
