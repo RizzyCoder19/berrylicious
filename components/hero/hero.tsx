@@ -199,7 +199,7 @@ export function Hero() {
 
           <div ref={introWordmarkRef} className="text-center">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#FFF9F0] font-display tracking-wider">
-              BERRYLICIOUS
+              BERRELLE
             </h2>
             <p className="text-xs uppercase font-mono tracking-widest text-[#E98FA8] mt-1">
               Chapter 01 • The Opening Film
@@ -269,7 +269,7 @@ export function Hero() {
                 </svg>
               </span>
               <span className="film-line block text-[#9E4663] italic">
-                Completely Berrylicious.
+                Completely Berrelle.
               </span>
             </h1>
 

@@ -50,7 +50,7 @@ export function BerryLogo({ className = "h-9 w-auto" }: { className?: string }) 
       {/* Script wordmark */}
       <div className="flex flex-col">
         <span className="font-display text-3xl font-bold tracking-tight text-[#9E4663] leading-none">
-          Berrylicious
+          Berrelle
         </span>
         <span className="text-[9px] font-bold tracking-widest text-[#382D32]/70 uppercase pl-0.5">
           Desserts • Coffee • Good Vibes

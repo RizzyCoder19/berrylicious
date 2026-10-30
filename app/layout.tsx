@@ -20,10 +20,11 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Berrylicious — Desserts, Coffee & Good Vibes",
+  title: "Berrelle — Desserts, Coffee & Good Vibes",
   description:
-    "Discover Berrylicious — playful desserts, fruit-forward flavours, gelato and indulgent treats made to turn ordinary moments into something sweeter.",
+    "Discover Berrelle — playful desserts, fruit-forward flavours, gelato and indulgent treats made to turn ordinary moments into something sweeter.",
   keywords: [
+    "Berrelle",
     "Berrylicious",
     "dessert startup",
     "real fruit dessert",
@@ -35,9 +36,9 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Tanvi Ojha", url: "https://berrylicious.in" }],
   openGraph: {
-    title: "Berrylicious — Desserts, Coffee & Good Vibes",
+    title: "Berrelle — Desserts, Coffee & Good Vibes",
     description:
-      "Discover Berrylicious — playful desserts, fruit-forward flavours, gelato and indulgent treats made to turn ordinary moments into something sweeter.",
+      "Discover Berrelle — playful desserts, fruit-forward flavours, gelato and indulgent treats made to turn ordinary moments into something sweeter.",
     siteName: "Berrylicious",
     locale: "en_IN",
     type: "website",

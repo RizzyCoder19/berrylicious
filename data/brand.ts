@@ -1,13 +1,13 @@
 export const BRAND = {
-  name: "Berrylicious",
+  name: "Berrelle",
   founder: {
     name: "Tanvi Ojha",
-    title: "Founder, Berrylicious",
-    bio: "Berrylicious was created with a simple idea: dessert should feel exciting, beautiful and accessible enough to enjoy regularly.",
+    title: "Founder, Berrelle",
+    bio: "Berrelle was created with a simple idea: dessert should feel exciting, beautiful and accessible enough to enjoy regularly.",
     quote: "We wanted to build something sweet, playful, and genuinely delicious — desserts that spark a smile the moment you look at them.",
   },
   eyebrow: "DESSERTS • COFFEE • GOOD VIBES",
-  headline: "A little sweet. A little chaotic. Completely Berrylicious.",
+  headline: "A little sweet. A little chaotic. Completely Berrelle.",
   subheadline: "Desserts that turn ordinary moments into something sweeter.",
   ctas: {
     exploreMenu: "Explore the Menu",
@@ -17,7 +17,7 @@ export const BRAND = {
   intro: {
     heading: "Dessert, with a little more imagination.",
     paragraph:
-      "Berrylicious is a home-grown dessert brand built around flavour, creativity and accessible indulgence. From fruit-forward desserts and gelato to waffles, pancakes, churros and Indian-inspired combinations, Berrylicious brings together familiar favourites with playful new twists.",
+      "Berrelle is a home-grown dessert brand built around flavour, creativity and accessible indulgence. From fruit-forward desserts and gelato to waffles, pancakes, churros and Indian-inspired combinations, Berrelle brings together familiar favourites with playful new twists.",
     cards: [
       {
         title: "Fresh",
@@ -38,7 +38,7 @@ export const BRAND = {
   },
   theGap: {
     heading: "We noticed a gap.",
-    subheading: "Where does Berrylicious sit in the dessert landscape?",
+    subheading: "Where does Berrelle sit in the dessert landscape?",
     pillars: [
       {
         label: "Basic Mass Market",
@@ -47,7 +47,7 @@ export const BRAND = {
         active: false,
       },
       {
-        label: "Berrylicious",
+        label: "Berrelle",
         tag: "Our Sweet Spot",
         points: [
           "Great experiential vibe",
